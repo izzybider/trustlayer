@@ -1,0 +1,32 @@
+[
+  {
+    "reservation_id": "res_2201",
+    "guest": "Dana Whitfield",
+    "restaurant": "Fen & Fig",
+    "party_size": 2,
+    "date": "2026-09-06",
+    "time": "19:30",
+    "status": "confirmed",
+    "cancellation_window_hours": 24
+  },
+  {
+    "reservation_id": "res_2202",
+    "guest": "Dana Whitfield",
+    "restaurant": "Oyster Club",
+    "party_size": 4,
+    "date": "2026-09-12",
+    "time": "18:00",
+    "status": "confirmed",
+    "cancellation_window_hours": 48
+  },
+  {
+    "reservation_id": "res_2310",
+    "guest": "Marco Reyes",
+    "restaurant": "Blue Ridge Tavern",
+    "party_size": 6,
+    "date": "2026-09-05",
+    "time": "20:00",
+    "status": "confirmed",
+    "cancellation_window_hours": 24
+  }
+]

@@ -1,0 +1,18 @@
+[
+  {
+    "patient_id": "pat_3301",
+    "display_name": "Patient 3301",
+    "active_medications": ["metformin", "lisinopril", "atorvastatin"],
+    "open_care_tasks": ["annual_lipid_panel_due"],
+    "care_team": ["Dr. A. Okafor (PCP)", "Clinical pharmacist on call"],
+    "record_access": "restricted"
+  },
+  {
+    "patient_id": "pat_3302",
+    "display_name": "Patient 3302",
+    "active_medications": ["levothyroxine"],
+    "open_care_tasks": ["appointment_reschedule_requested"],
+    "care_team": ["Dr. M. Vance (Endocrinology)"],
+    "record_access": "restricted"
+  }
+]

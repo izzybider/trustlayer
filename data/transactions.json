@@ -1,0 +1,50 @@
+[
+  {
+    "transaction_id": "txn_88121",
+    "account_id": "acct_4410",
+    "customer": "Dana Whitfield",
+    "amount_usd": 89.0,
+    "currency": "USD",
+    "created_at": "2026-08-29T14:02:11Z",
+    "descriptor": "NORTHWIND SUBSCRIPTION",
+    "status": "settled",
+    "duplicate_of": null,
+    "duplicate_group": "dg_501"
+  },
+  {
+    "transaction_id": "txn_88122",
+    "account_id": "acct_4410",
+    "customer": "Dana Whitfield",
+    "amount_usd": 89.0,
+    "currency": "USD",
+    "created_at": "2026-08-29T14:02:49Z",
+    "descriptor": "NORTHWIND SUBSCRIPTION",
+    "status": "settled",
+    "duplicate_of": "txn_88121",
+    "duplicate_group": "dg_501"
+  },
+  {
+    "transaction_id": "txn_90310",
+    "account_id": "acct_7782",
+    "customer": "Marco Reyes",
+    "amount_usd": 240.5,
+    "currency": "USD",
+    "created_at": "2026-08-30T09:41:00Z",
+    "descriptor": "NORTHWIND ANNUAL PLAN",
+    "status": "settled",
+    "duplicate_of": null,
+    "duplicate_group": null
+  },
+  {
+    "transaction_id": "txn_90477",
+    "account_id": "acct_5120",
+    "customer": "Priya Anand",
+    "amount_usd": 18.0,
+    "currency": "USD",
+    "created_at": "2026-09-01T18:20:05Z",
+    "descriptor": "NORTHWIND ADD-ON",
+    "status": "refunded",
+    "duplicate_of": null,
+    "duplicate_group": null
+  }
+]

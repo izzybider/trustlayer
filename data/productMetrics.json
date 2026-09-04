@@ -1,0 +1,43 @@
+{
+  "checkout_conversion": {
+    "unit": "percent",
+    "series": [
+      { "date": "2026-09-01", "value": 3.42 },
+      { "date": "2026-09-02", "value": 3.38 },
+      { "date": "2026-09-03", "value": 2.61 }
+    ],
+    "segments": {
+      "2026-09-03": [
+        { "segment": "mobile_web / iOS 18.4", "value": 1.12, "prior": 3.31 },
+        { "segment": "mobile_web / Android", "value": 3.29, "prior": 3.35 },
+        { "segment": "desktop", "value": 3.36, "prior": 3.4 }
+      ]
+    },
+    "annotations": [
+      {
+        "date": "2026-09-03",
+        "note": "Release 2026.9.1 shipped a new payment sheet to mobile web at 09:10 UTC."
+      }
+    ]
+  },
+  "signup_conversion": {
+    "unit": "percent",
+    "series": [
+      { "date": "2026-09-01", "value": 8.9 },
+      { "date": "2026-09-02", "value": 9.1 },
+      { "date": "2026-09-03", "value": 9.0 }
+    ],
+    "segments": {},
+    "annotations": []
+  },
+  "trial_to_paid": {
+    "unit": "percent",
+    "series": [
+      { "date": "2026-08-31", "value": 21.4 },
+      { "date": "2026-09-01", "value": 21.0 },
+      { "date": "2026-09-02", "value": 20.8 }
+    ],
+    "segments": {},
+    "annotations": []
+  }
+}

@@ -1,0 +1,36 @@
+[
+  {
+    "account_id": "acct_4410",
+    "name": "Northwind Retail",
+    "owner": "dana.whitfield@example.com",
+    "plan": "business",
+    "seats": 24,
+    "status": "active",
+    "sso_enforced": true,
+    "pending_owner_transfer": null
+  },
+  {
+    "account_id": "acct_7782",
+    "name": "Larkspur Studio",
+    "owner": "marco.reyes@example.com",
+    "plan": "team",
+    "seats": 6,
+    "status": "active",
+    "sso_enforced": false,
+    "pending_owner_transfer": {
+      "requested_by": "avery.lin@example.com",
+      "requested_at": "2026-09-02T11:15:00Z",
+      "approved_by_current_owner": false
+    }
+  },
+  {
+    "account_id": "acct_5120",
+    "name": "Copperline Coffee",
+    "owner": "priya.anand@example.com",
+    "plan": "starter",
+    "seats": 2,
+    "status": "past_due",
+    "sso_enforced": false,
+    "pending_owner_transfer": null
+  }
+]

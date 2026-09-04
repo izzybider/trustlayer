@@ -1,0 +1,203 @@
+{
+  "roles": {
+    "support_agent_l1": {
+      "issue_refund": {
+        "allowed": true,
+        "limit_usd": 100
+      },
+      "cancel_reservation": {
+        "allowed": true
+      },
+      "change_account_owner": {
+        "allowed": false,
+        "requires": "account_admin"
+      },
+      "reset_mfa": {
+        "allowed": false,
+        "requires": "identity_desk"
+      },
+      "export_patient_record": {
+        "allowed": false,
+        "requires": "clinical_records_officer"
+      },
+      "close_account": {
+        "allowed": false,
+        "requires": "account_admin"
+      },
+      "change_plan": {
+        "allowed": false,
+        "requires": "account_admin"
+      },
+      "add_seats": {
+        "allowed": true
+      },
+      "waive_fee": {
+        "allowed": true,
+        "limit_usd": 50
+      },
+      "issue_credit": {
+        "allowed": true,
+        "limit_usd": 50
+      },
+      "delete_customer_data": {
+        "allowed": false,
+        "requires": "data_protection_officer"
+      },
+      "disable_sso": {
+        "allowed": false,
+        "requires": "account_admin"
+      },
+      "grant_admin": {
+        "allowed": false,
+        "requires": "account_admin"
+      },
+      "reschedule_appointment": {
+        "allowed": true
+      },
+      "cancel_contract": {
+        "allowed": false,
+        "requires": "account_admin"
+      },
+      "reopen_ticket": {
+        "allowed": true
+      }
+    },
+    "support_agent_l2": {
+      "issue_refund": {
+        "allowed": true,
+        "limit_usd": 500
+      },
+      "cancel_reservation": {
+        "allowed": true
+      },
+      "change_account_owner": {
+        "allowed": false,
+        "requires": "account_admin"
+      },
+      "reset_mfa": {
+        "allowed": false,
+        "requires": "identity_desk"
+      },
+      "export_patient_record": {
+        "allowed": false,
+        "requires": "clinical_records_officer"
+      },
+      "close_account": {
+        "allowed": false,
+        "requires": "account_admin"
+      },
+      "change_plan": {
+        "allowed": true
+      },
+      "add_seats": {
+        "allowed": true
+      },
+      "waive_fee": {
+        "allowed": true,
+        "limit_usd": 250
+      },
+      "issue_credit": {
+        "allowed": true,
+        "limit_usd": 250
+      },
+      "delete_customer_data": {
+        "allowed": false,
+        "requires": "data_protection_officer"
+      },
+      "disable_sso": {
+        "allowed": false,
+        "requires": "account_admin"
+      },
+      "grant_admin": {
+        "allowed": false,
+        "requires": "account_admin"
+      },
+      "reschedule_appointment": {
+        "allowed": true
+      },
+      "cancel_contract": {
+        "allowed": false,
+        "requires": "account_admin"
+      },
+      "reopen_ticket": {
+        "allowed": true
+      }
+    },
+    "account_admin": {
+      "issue_refund": {
+        "allowed": true,
+        "limit_usd": 5000
+      },
+      "cancel_reservation": {
+        "allowed": true
+      },
+      "change_account_owner": {
+        "allowed": true,
+        "requires_owner_approval": true
+      },
+      "reset_mfa": {
+        "allowed": true
+      },
+      "export_patient_record": {
+        "allowed": false,
+        "requires": "clinical_records_officer"
+      },
+      "close_account": {
+        "allowed": true
+      },
+      "change_plan": {
+        "allowed": true
+      },
+      "add_seats": {
+        "allowed": true
+      },
+      "waive_fee": {
+        "allowed": true,
+        "limit_usd": 1000
+      },
+      "issue_credit": {
+        "allowed": true,
+        "limit_usd": 1000
+      },
+      "delete_customer_data": {
+        "allowed": false,
+        "requires": "data_protection_officer"
+      },
+      "disable_sso": {
+        "allowed": true
+      },
+      "grant_admin": {
+        "allowed": true,
+        "requires_owner_approval": true
+      },
+      "reschedule_appointment": {
+        "allowed": true
+      },
+      "cancel_contract": {
+        "allowed": true
+      },
+      "reopen_ticket": {
+        "allowed": true
+      }
+    }
+  },
+  "default_role": "support_agent_l1",
+  "known_actions": [
+    "issue_refund",
+    "cancel_reservation",
+    "change_account_owner",
+    "reset_mfa",
+    "export_patient_record",
+    "close_account",
+    "change_plan",
+    "add_seats",
+    "waive_fee",
+    "issue_credit",
+    "delete_customer_data",
+    "disable_sso",
+    "grant_admin",
+    "reschedule_appointment",
+    "cancel_contract",
+    "reopen_ticket"
+  ]
+}
