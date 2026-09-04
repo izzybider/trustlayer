@@ -64,11 +64,19 @@ body {
   .rule-row {
     @apply flex items-baseline justify-between gap-4 border-b border-line/70 py-2 last:border-b-0;
   }
+  /* min-h keeps even the dense debugging controls tappable; it rises on
+     touch-sized viewports. */
   .btn {
-    @apply inline-flex items-center justify-center gap-2 border border-line-strong bg-white px-3 py-2 text-[13px] font-medium text-ink transition-colors hover:bg-accent-soft disabled:cursor-not-allowed disabled:opacity-45;
+    @apply inline-flex min-h-[36px] items-center justify-center gap-2 border border-line-strong bg-white px-3 py-2 text-[13px] font-medium text-ink transition-colors hover:bg-accent-soft disabled:cursor-not-allowed disabled:opacity-45;
   }
   .btn-primary {
-    @apply inline-flex items-center justify-center gap-2 border border-ink bg-ink px-4 py-2.5 text-[13px] font-medium text-paper transition-colors hover:bg-accent hover:border-accent disabled:cursor-not-allowed disabled:opacity-45;
+    @apply inline-flex min-h-[40px] items-center justify-center gap-2 border border-ink bg-ink px-4 py-2.5 text-[13px] font-medium text-paper transition-colors hover:border-accent hover:bg-accent disabled:cursor-not-allowed disabled:opacity-45;
+  }
+  @media (max-width: 640px) {
+    .btn,
+    .btn-primary {
+      @apply min-h-[44px];
+    }
   }
   .chip {
     @apply inline-flex items-center gap-1.5 border border-line-strong bg-white px-2.5 py-1 font-mono text-[11px] text-ink-soft;
@@ -83,6 +91,17 @@ body {
 
 .tabular {
   font-variant-numeric: tabular-nums;
+}
+
+/* Touch targets: segmented controls and disclosure toggles are dense by design
+   on desktop, but must stay comfortably tappable on a phone. */
+@media (max-width: 640px) {
+  button,
+  summary,
+  a.btn,
+  a.btn-primary {
+    min-height: 44px;
+  }
 }
 
 details > summary {

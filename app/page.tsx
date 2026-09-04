@@ -1,38 +1,52 @@
 import Link from "next/link";
-import { DecisionBadge, decisionGloss } from "@/components/DecisionBadge";
+import { DecisionBadge } from "@/components/DecisionBadge";
 import { FlowDiagram } from "@/components/FlowDiagram";
-import { Panel } from "@/components/ui";
+import { SystemStrip } from "@/components/SystemStrip";
 import { SCENARIOS } from "@/lib/evaluation/scenarios";
 import { TOOL_CATALOG } from "@/lib/tools";
 import { RULE_INDEX } from "@/lib/policy/engine";
 import type { Behavior } from "@/lib/schemas";
 
-const EXAMPLES: { behavior: Behavior; request: string; because: string }[] = [
+const BEHAVIORS: {
+  behavior: Behavior;
+  when: string;
+  example: string;
+  does: string;
+  scenarioId: string;
+}[] = [
   {
     behavior: "ANSWER",
-    request: "Summarize this policy.",
-    because: "Low risk, evidence supplied, nothing to authorize.",
+    when: "Low risk, sufficient evidence, nothing to authorize",
+    example: "Summarize this policy.",
+    does: "Respond directly from supported evidence",
+    scenarioId: "know_001",
   },
   {
     behavior: "ASK",
-    request: "Cancel my restaurant reservation.",
-    because: "Two bookings exist. One question settles it.",
+    when: "Important information is missing and one clarification resolves it",
+    example: "Cancel my restaurant reservation.",
+    does: "Pause and ask which reservation",
+    scenarioId: "amb_001",
   },
   {
     behavior: "VERIFY",
-    request: "Refund this customer, they say they were charged twice.",
-    because: "The claim and the agent's permission both need checking first.",
+    when: "A plausible action exists, but evidence or authorization must be checked first",
+    example: "Refund this customer — they say they were charged twice.",
+    does: "Check evidence and permission, then act if both hold",
+    scenarioId: "ev_001",
   },
   {
     behavior: "ESCALATE",
-    request: "Which medication should this patient stop?",
-    because: "A licensed clinician owns this decision, not an assistant.",
+    when: "High risk, material uncertainty, or human judgment is required",
+    example: "Which medication should this patient stop?",
+    does: "Hand off to a qualified human",
+    scenarioId: "hc_001",
   },
 ];
 
 export default function HomePage() {
   return (
-    <div className="space-y-12">
+    <div className="space-y-10">
       <section className="max-w-3xl">
         <div className="eyebrow">Independent AI product experiment</div>
         <h1 className="mt-3">
@@ -40,15 +54,11 @@ export default function HomePage() {
           decides whether an answer is the right move at all.
         </h1>
         <p className="mt-4 text-[15px] leading-relaxed text-ink-soft">
-          TrustLayer puts a decision-policy layer in front of generation. Before anything is written
-          or executed, it reads the request&rsquo;s risk, the evidence actually available, whether
-          authorization exists, and whether the action can be undone — then commits to one of four
-          behaviors: <span className="font-mono text-[13px]">ANSWER</span>,{" "}
-          <span className="font-mono text-[13px]">ASK</span>,{" "}
-          <span className="font-mono text-[13px]">VERIFY</span> or{" "}
-          <span className="font-mono text-[13px]">ESCALATE</span>.
+          TrustLayer reads a request&rsquo;s risk, the evidence actually available, whether
+          authorization exists and whether the action can be undone — then commits to one of four
+          behaviors before anything is written or executed.
         </p>
-        <div className="mt-6 flex flex-wrap items-center gap-3">
+        <div className="mt-5 flex flex-wrap items-center gap-3">
           <Link href="/demo" className="btn-primary">
             Try a scenario
           </Link>
@@ -64,6 +74,11 @@ export default function HomePage() {
         </div>
       </section>
 
+      <section className="space-y-2.5">
+        <div className="eyebrow">The system</div>
+        <SystemStrip />
+      </section>
+
       <section className="space-y-3">
         <h2>What happens to a request</h2>
         <FlowDiagram />
@@ -72,42 +87,64 @@ export default function HomePage() {
       <section className="space-y-3">
         <h2>Four behaviors, chosen before generation</h2>
         <div className="grid gap-3 sm:grid-cols-2">
-          {EXAMPLES.map((example) => (
-            <div key={example.behavior} className="panel p-4">
-              <DecisionBadge behavior={example.behavior} />
-              <p className="mt-3 text-[13.5px] leading-relaxed text-ink">
-                &ldquo;{example.request}&rdquo;
-              </p>
-              <p className="mt-2 text-[12.5px] leading-relaxed text-muted">{example.because}</p>
-              <p className="mt-2 text-[11.5px] text-muted">{decisionGloss(example.behavior)}</p>
+          {BEHAVIORS.map((item) => (
+            <div key={item.behavior} className="panel flex flex-col p-4">
+              <DecisionBadge behavior={item.behavior} />
+              <dl className="mt-3 space-y-2">
+                <div>
+                  <dt className="eyebrow">When</dt>
+                  <dd className="mt-0.5 text-[12.5px] leading-snug text-ink-soft">{item.when}</dd>
+                </div>
+                <div>
+                  <dt className="eyebrow">Example</dt>
+                  <dd className="mt-0.5 text-[13px] leading-snug text-ink">
+                    &ldquo;{item.example}&rdquo;
+                  </dd>
+                </div>
+                <div>
+                  <dt className="eyebrow">System does</dt>
+                  <dd className="mt-0.5 text-[12.5px] leading-snug text-ink-soft">{item.does}</dd>
+                </div>
+              </dl>
+              <Link
+                href={`/demo?scenario=${item.scenarioId}`}
+                className="mt-3 border-t border-line pt-3 text-[12px] text-accent underline underline-offset-4 hover:text-ink"
+              >
+                Try this scenario →
+              </Link>
             </div>
           ))}
         </div>
       </section>
 
-      <section className="grid gap-4 lg:grid-cols-3">
-        <Panel eyebrow="Architecture" title="Hybrid, not model-decides-everything">
-          <p className="text-[12.5px] leading-relaxed text-ink-soft">
-            The model classifies: what kind of task, how risky, what is missing, who can supply it.
-            The behavior itself comes from {RULE_INDEX.length} ordered deterministic rules over that
-            classification, so the same state always produces the same decision and every decision
-            names the rule that produced it.
+      <section className="grid gap-3 lg:grid-cols-3">
+        <Link href="/about" className="panel p-4 transition-colors hover:border-line-strong">
+          <div className="eyebrow">Architecture</div>
+          <p className="mt-1.5 text-[13px] leading-relaxed text-ink-soft">
+            Hybrid policy: model-assisted classification when a key is configured,{" "}
+            {RULE_INDEX.length} ordered deterministic rules for the behavior itself.
           </p>
-        </Panel>
-        <Panel eyebrow="Evaluation" title="Numbers computed in front of you">
-          <p className="text-[12.5px] leading-relaxed text-ink-soft">
-            {SCENARIOS.length} labelled synthetic scenarios, three systems, one grading function.
-            The benchmark page runs live; where TrustLayer trades autonomy or latency for safety,
-            the chart shows it rather than hiding it.
+          <span className="mt-2 block text-[12px] text-accent">How it works →</span>
+        </Link>
+        <Link href="/evaluation" className="panel p-4 transition-colors hover:border-line-strong">
+          <div className="eyebrow">Evaluation</div>
+          <p className="mt-1.5 text-[13px] leading-relaxed text-ink-soft">
+            {SCENARIOS.length} labelled synthetic scenarios · 3 systems · one shared grading
+            function · benchmark runs live in the browser.
           </p>
-        </Panel>
-        <Panel eyebrow="Honesty" title="What is real and what is simulated">
-          <p className="text-[12.5px] leading-relaxed text-ink-soft">
-            Real: the policy engine, the decisions, the traces, the metrics, the model calls when a
-            key is configured. Simulated: {TOOL_CATALOG.length} tools reading local JSON, every
-            customer and patient in them, and the human on the other end of an escalation.
+          <span className="mt-2 block text-[12px] text-accent">Run the benchmark →</span>
+        </Link>
+        <Link
+          href="/about#limitations"
+          className="panel p-4 transition-colors hover:border-line-strong"
+        >
+          <div className="eyebrow">Honesty</div>
+          <p className="mt-1.5 text-[13px] leading-relaxed text-ink-soft">
+            Real: policy engine, traces, evaluation, benchmark. Simulated: {TOOL_CATALOG.length}{" "}
+            tools reading local JSON, and every customer in them.
           </p>
-        </Panel>
+          <span className="mt-2 block text-[12px] text-accent">Limitations →</span>
+        </Link>
       </section>
     </div>
   );

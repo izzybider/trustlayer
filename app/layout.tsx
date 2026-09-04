@@ -5,6 +5,9 @@ import { NavLinks } from "@/components/NavLinks";
 import { ModeBanner } from "@/components/ModeBanner";
 import { modelEnabled, MODEL } from "@/lib/ai/client";
 
+/* TODO: point at the deployed portfolio once it is live; LinkedIn until then. */
+const PORTFOLIO_URL = "https://www.linkedin.com/in/ibider/";
+
 export const metadata: Metadata = {
   title: "TrustLayer — decide before you answer",
   description:
@@ -22,8 +25,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         >
           Skip to content
         </a>
-        <header className="border-b border-line bg-paper/90 backdrop-blur supports-[backdrop-filter]:bg-paper/75 sticky top-0 z-40">
-          <div className="mx-auto flex max-w-content flex-wrap items-center justify-between gap-3 px-5 py-3.5">
+        <header className="sticky top-0 z-40 border-b border-line bg-paper/90 backdrop-blur supports-[backdrop-filter]:bg-paper/75">
+          <div className="mx-auto flex max-w-content flex-wrap items-center justify-between gap-x-4 gap-y-2 px-5 py-3">
             <Link href="/" className="flex items-baseline gap-2.5">
               <span
                 className="text-[17px] font-semibold tracking-tight"
@@ -35,21 +38,30 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 decide before you answer
               </span>
             </Link>
-            <NavLinks />
+            <div className="flex items-center gap-3">
+              <NavLinks />
+              <ModeBanner modelEnabled={enabled} model={MODEL} />
+            </div>
           </div>
         </header>
-        <ModeBanner modelEnabled={enabled} model={MODEL} />
-        <main id="main" className="mx-auto max-w-content px-5 py-8 sm:py-10">
+        <main id="main" className="mx-auto max-w-content px-5 py-7 sm:py-9">
           {children}
         </main>
-        <footer className="mt-16 border-t border-line">
-          <div className="mx-auto max-w-content px-5 py-8 text-[12.5px] leading-relaxed text-muted">
-            <p className="max-w-2xl">
-              TrustLayer is an independent AI product and evaluation experiment built with synthetic
-              scenarios and simulated tools. It is not deployed in any real workflow, and the
-              payments, account, analytics and care-operations tools read local JSON fixtures only.
+        <footer className="mt-12 border-t border-line">
+          <div className="mx-auto flex max-w-content flex-wrap items-baseline justify-between gap-x-6 gap-y-2 px-5 py-6 text-[12px] text-muted">
+            <p>
+              <span className="text-ink-soft">TrustLayer</span> · Independent AI product experiment ·
+              2026
             </p>
-            <p className="mt-3">Portfolio project · 2026</p>
+            <p>Synthetic scenarios and simulated external tools</p>
+            <a
+              href={PORTFOLIO_URL}
+              className="underline underline-offset-4 hover:text-ink"
+              target="_blank"
+              rel="noreferrer"
+            >
+              Isabella Bider
+            </a>
           </div>
         </footer>
       </body>

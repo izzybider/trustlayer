@@ -12,7 +12,7 @@ export const metadata = {
 
 export default function AboutPage() {
   return (
-    <div className="max-w-3xl space-y-10">
+    <div className="max-w-3xl space-y-8">
       <header>
         <div className="eyebrow">Product thesis</div>
         <h1 className="mt-2">Deciding whether to answer is a product decision</h1>
@@ -42,6 +42,58 @@ export default function AboutPage() {
           The objective is not minimizing escalation. The objective is minimizing inappropriate
           behavior while preserving useful autonomy.
         </Callout>
+      </section>
+
+      <section className="space-y-3">
+        <h2>Why retrieval is not enough</h2>
+        <p className="text-[14px] leading-relaxed text-ink-soft">
+          Retrieval answers <em>what evidence do I have?</em> It does not answer{" "}
+          <em>what should I do given that evidence?</em> A retrieval agent handed a refund request
+          can ground itself perfectly in the refund policy and still issue the refund without ever
+          checking the transaction or the operator&rsquo;s permission. Grounding and appropriate
+          autonomy are related, but they are not the same property, and only one of them is
+          improved by better retrieval.
+        </p>
+      </section>
+
+      <section className="space-y-3">
+        <h2>Policy design</h2>
+        <p className="text-[14px] leading-relaxed text-ink-soft">
+          Four behaviors, selected before generation, from explicit state rather than from model
+          preference.
+        </p>
+        <div className="panel divide-y divide-line/70">
+          {[
+            {
+              behavior: "ANSWER",
+              when: "Sufficient evidence, low risk, nothing to authorize.",
+            },
+            {
+              behavior: "ASK",
+              when: "Information is missing and one clarification would resolve it.",
+            },
+            {
+              behavior: "VERIFY",
+              when: "An action is plausible but evidence or authorization must be checked first.",
+            },
+            {
+              behavior: "ESCALATE",
+              when: "High risk, material uncertainty, or a judgment a licensed human owns.",
+            },
+          ].map((row) => (
+            <div key={row.behavior} className="flex flex-wrap items-baseline gap-x-3 px-4 py-2.5">
+              <span className="font-mono text-[12px] tracking-[0.1em] text-ink">
+                {row.behavior}
+              </span>
+              <span className="text-[12.5px] text-muted">{row.when}</span>
+            </div>
+          ))}
+        </div>
+        <p className="text-[13.5px] leading-relaxed text-ink-soft">
+          VERIFY is the behavior that carries the thesis: it is not a refusal but an
+          evidence-gathering state, and when the evidence and the permission both hold, the policy
+          re-evaluates and the action proceeds.
+        </p>
       </section>
 
       <section className="space-y-3">
@@ -142,6 +194,23 @@ export default function AboutPage() {
       </section>
 
       <section className="space-y-3">
+        <h2>The experiment</h2>
+        <p className="text-[14px] leading-relaxed text-ink-soft">
+          Three system designs run the same {SCENARIOS.length} labelled scenarios, with the same
+          tool fixtures and the same grading function, so the decision policy is the only variable:
+          a direct LLM that answers every request, a retrieval agent that grounds first and then
+          answers, and TrustLayer, which selects a behavior before either. The benchmark runs in the
+          browser and reports what it computes, including where the policy costs autonomy.
+        </p>
+        <Link
+          href="/evaluation"
+          className="inline-block text-[13px] text-accent underline underline-offset-4 hover:text-ink"
+        >
+          Run the benchmark →
+        </Link>
+      </section>
+
+      <section id="limitations" className="scroll-mt-24 space-y-3">
         <h2>Limitations</h2>
         <ul className="space-y-2 text-[13.5px] leading-relaxed text-ink-soft">
           <li>
@@ -169,10 +238,37 @@ export default function AboutPage() {
         </ul>
       </section>
 
-      <section>
-        <Link href="/demo" className="btn-primary">
-          Try a scenario
-        </Link>
+      <section className="space-y-3">
+        <h2>What I would test next</h2>
+        <ul className="space-y-2 text-[13.5px] leading-relaxed text-ink-soft">
+          <li>· A larger benchmark, with the labels audited by someone who did not write the policy.</li>
+          <li>· Integration against a real workflow, where the tools have latency and failure modes.</li>
+          <li>· Human calibration: whether operators agree with the behavior the policy selected.</li>
+          <li>· Threshold tuning per task type, rather than one risk ladder for every domain.</li>
+          <li>· Operating telemetry — takeover rate, repeat corrections, time to completion.</li>
+        </ul>
+      </section>
+
+      <section className="border-t border-line pt-6">
+        <div className="eyebrow">Built by</div>
+        <p className="mt-1 text-[13.5px] text-ink">Isabella Bider</p>
+        <p className="mt-0.5 text-[12.5px] text-muted">
+          Independent AI product experiment · product thesis, system design, implementation and
+          evaluation
+        </p>
+        <div className="mt-3 flex flex-wrap items-center gap-4">
+          <Link href="/demo" className="btn-primary">
+            Try a scenario
+          </Link>
+          <a
+            href="https://www.linkedin.com/in/ibider/"
+            target="_blank"
+            rel="noreferrer"
+            className="text-[13px] text-muted underline underline-offset-4 hover:text-ink"
+          >
+            LinkedIn
+          </a>
+        </div>
       </section>
     </div>
   );

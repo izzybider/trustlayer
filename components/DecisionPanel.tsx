@@ -50,7 +50,7 @@ export function DecisionPanel({
 
       <div className="mt-4 border-t border-line pt-3">
         <div className="flex items-baseline justify-between gap-3">
-          <div className="eyebrow">Decision factors</div>
+          <div className="eyebrow">Why this behavior</div>
           <span className="text-[11px] text-muted">Observable factors, not hidden reasoning</span>
         </div>
         <ul className="mt-2 space-y-1.5">

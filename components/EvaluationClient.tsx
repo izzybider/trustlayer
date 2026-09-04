@@ -18,7 +18,7 @@ import {
   type ContextMode,
 } from "@/lib/evaluation/context";
 import { CATEGORY_LABELS } from "@/lib/evaluation/scenarios";
-import type { EvaluationResult, Scenario, SystemVariant } from "@/lib/schemas";
+import type { EvaluationResult, Scenario, SystemMetrics, SystemVariant } from "@/lib/schemas";
 
 const SYSTEMS: SystemVariant[] = ["direct_llm", "rag_agent", "trustlayer"];
 const BATCH_SIZE = 6;
@@ -48,6 +48,50 @@ function subsetOf(scenarios: Scenario[], perCategory: number): Scenario[] {
     counts.set(s.category, n + 1);
     return true;
   });
+}
+
+/**
+ * One sentence, computed from the run that just finished. Every number is read
+ * back out of the metrics — nothing here is written in advance, including the
+ * direction of the result.
+ */
+function RunSummary({ metrics }: { metrics: SystemMetrics[] }) {
+  const baseline = metrics.find((m) => m.system === "direct_llm");
+  const tl = metrics.find((m) => m.system === "trustlayer");
+  if (!baseline || !tl) return null;
+
+  const pp = (v: number) => `${(v * 100).toFixed(0)}%`;
+  const delta = (from: number, to: number) => {
+    const diff = (to - from) * 100;
+    if (Math.abs(diff) < 0.5) return "held flat";
+    return `${diff > 0 ? "rose" : "fell"} ${Math.abs(diff).toFixed(0)} points`;
+  };
+
+  const unsupportedImproved = tl.unsupported_behavior_rate < baseline.unsupported_behavior_rate;
+  const autonomyCost = tl.autonomous_completion_rate < baseline.autonomous_completion_rate;
+
+  return (
+    <div className="border-l-2 border-accent bg-accent-soft/60 px-4 py-3">
+      <div className="eyebrow">Computed from this run</div>
+      <p className="mt-1.5 text-[13.5px] leading-relaxed text-ink">
+        Against the direct LLM, TrustLayer&rsquo;s unsupported behavior{" "}
+        {delta(baseline.unsupported_behavior_rate, tl.unsupported_behavior_rate)} (
+        {pp(baseline.unsupported_behavior_rate)} → {pp(tl.unsupported_behavior_rate)}) while
+        autonomous completion {delta(baseline.autonomous_completion_rate, tl.autonomous_completion_rate)}{" "}
+        ({pp(baseline.autonomous_completion_rate)} → {pp(tl.autonomous_completion_rate)}).
+        Unnecessary escalation {delta(baseline.unnecessary_escalation_rate, tl.unnecessary_escalation_rate)}{" "}
+        ({pp(baseline.unnecessary_escalation_rate)} → {pp(tl.unnecessary_escalation_rate)}).
+      </p>
+      <p className="mt-1.5 text-[12px] leading-relaxed text-muted">
+        {unsupportedImproved
+          ? autonomyCost
+            ? "That is the trade the policy is designed to make: less unsupportable behavior, paid for in autonomy and extra turns."
+            : "On this scenario set the policy reduced unsupported behavior without costing autonomy."
+          : "On this run the policy did not reduce unsupported behavior — the result is reported as computed."}{" "}
+        {metrics[0]?.n ?? 0} scenarios per system, synthetic set.
+      </p>
+    </div>
+  );
 }
 
 export function EvaluationClient({
@@ -246,10 +290,13 @@ export function EvaluationClient({
       </div>
 
       {results.length === 0 && !running && (
-        <EmptyState
-          title="No results yet"
-          body="Nothing on this page is precomputed. Press Run benchmark and the three systems execute against the scenarios live; every number below is calculated from those runs."
-        />
+        <div className="grid gap-4 lg:grid-cols-[1fr_1fr]">
+          <TradeoffChart metrics={[]} />
+          <EmptyState
+            title="No results yet"
+            body="Nothing on this page is precomputed. Press Run benchmark and the three systems execute against the scenarios live; every number below, and every point on the chart, is calculated from those runs."
+          />
+        </div>
       )}
 
       {trustlayer && meta && (
@@ -286,6 +333,8 @@ export function EvaluationClient({
               hint="the friction this policy costs"
             />
           </div>
+
+          <RunSummary metrics={metrics} />
 
           <div className="grid gap-4 lg:grid-cols-[1fr_1fr]">
             <TradeoffChart metrics={metrics} />

@@ -1,4 +1,5 @@
 import { EvaluationClient } from "@/components/EvaluationClient";
+import { ExperimentDesign } from "@/components/ExperimentDesign";
 import { ExperimentPanel } from "@/components/ExperimentPanel";
 import { SCENARIOS, CATEGORY_LABELS } from "@/lib/evaluation/scenarios";
 import { modelEnabled } from "@/lib/ai/client";
@@ -19,7 +20,7 @@ export default function EvaluationPage() {
   }, {});
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-7">
       <header className="max-w-3xl">
         <div className="eyebrow">Evaluation lab</div>
         <h1 className="mt-2">Does deciding first actually help?</h1>
@@ -29,6 +30,8 @@ export default function EvaluationPage() {
           numbers are calculated from runs that happen in front of you.
         </p>
       </header>
+
+      <ExperimentDesign />
 
       <EvaluationClient scenarios={SCENARIOS} modelAvailable={modelEnabled()} />
 

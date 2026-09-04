@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ScenarioPicker } from "./ScenarioPicker";
 import { RequestPanel } from "./RequestPanel";
 import { SystemStatePanel } from "./SystemStatePanel";
@@ -8,6 +8,8 @@ import { DecisionPanel } from "./DecisionPanel";
 import { FinalBehaviorPanel } from "./FinalBehaviorPanel";
 import { ToolTrace } from "./ToolTrace";
 import { TraceViewer } from "./TraceViewer";
+import { TraceSummary } from "./TraceSummary";
+import { BaselineComparison } from "./BaselineComparison";
 import { PolicyControls } from "./PolicyControls";
 import { EventStream } from "./EventStream";
 import { DecisionBadge } from "./DecisionBadge";
@@ -19,7 +21,8 @@ import type { Behavior, Run, Scenario, ScenarioContext, SystemVariant } from "@/
 
 type Status = "idle" | "running" | "error";
 
-const SCREENSHOT_PRESETS: { behavior: Behavior; scenarioId: string }[] = [
+/** One canonical request per behavior, so the four outcomes are one click apart. */
+const BEHAVIOR_PRESETS: { behavior: Behavior; scenarioId: string }[] = [
   { behavior: "ANSWER", scenarioId: "know_001" },
   { behavior: "ASK", scenarioId: "amb_001" },
   { behavior: "VERIFY", scenarioId: "ev_001" },
@@ -29,9 +32,11 @@ const SCREENSHOT_PRESETS: { behavior: Behavior; scenarioId: string }[] = [
 export function DemoClient({
   featured,
   scenarios,
+  initialScenarioId,
 }: {
   featured: Scenario[];
   scenarios: Scenario[];
+  initialScenarioId?: string;
 }) {
   const [policy, setPolicy] = useState<PolicyConfig>(DEFAULT_POLICY);
   const [scenario, setScenario] = useState<Scenario | null>(null);
@@ -195,6 +200,18 @@ export function DemoClient({
     [scenarios],
   );
 
+  /* Land on a populated decision rather than an empty state: the first thing a
+     visitor sees should be the system doing the thing it exists to do. */
+  const autoRan = useRef(false);
+  useEffect(() => {
+    if (autoRan.current) return;
+    const target = initialScenarioId ? scenarioById.get(initialScenarioId) : undefined;
+    if (!target) return;
+    autoRan.current = true;
+    setScenario(target);
+    void execute(target.user_request, target.context, target.id);
+  }, [initialScenarioId, scenarioById, execute]);
+
   return (
     <div className="space-y-4">
       <div className="grid gap-4 lg:grid-cols-[1fr_320px]">
@@ -209,17 +226,21 @@ export function DemoClient({
             onSubmitCustom={onSubmitCustom}
             busy={busy}
           />
-          <div className="flex flex-wrap items-center gap-2 text-[11.5px] text-muted">
-            <span className="eyebrow">Screenshot presets</span>
-            {SCREENSHOT_PRESETS.map((preset) => {
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="eyebrow">One request per behavior</span>
+            {BEHAVIOR_PRESETS.map((preset) => {
               const target = scenarioById.get(preset.scenarioId);
               if (!target) return null;
+              const active = scenario?.id === target.id;
               return (
                 <button
                   key={preset.behavior}
                   type="button"
                   disabled={busy}
-                  className="btn px-2 py-1 text-[11.5px]"
+                  aria-pressed={active}
+                  className={`btn px-2.5 py-1 font-mono text-[11.5px] ${
+                    active ? "border-accent bg-accent-soft text-ink" : ""
+                  }`}
                   onClick={() => onSelectScenario(target)}
                 >
                   {preset.behavior}
@@ -270,6 +291,8 @@ export function DemoClient({
 
       {run && !busy && submitted && (
         <>
+          <TraceSummary run={run} />
+
           <div className="grid min-w-0 gap-4 lg:grid-cols-3">
             <RequestPanel
               userRequest={submitted.request}
@@ -333,25 +356,34 @@ export function DemoClient({
               </p>
             )}
             {baselines && (
-              <div className="grid gap-4 sm:grid-cols-2">
-                {(["direct_llm", "rag_agent"] as SystemVariant[]).map((system) => {
-                  const baselineRun = baselines[system];
-                  if (!baselineRun) return null;
-                  return (
-                    <div key={system} className="border border-line bg-white p-3">
-                      <div className="flex items-center justify-between gap-2">
-                        <span className="text-[13px] font-medium text-ink">
-                          {SYSTEM_SHORT_LABELS[system]}
-                        </span>
-                        <DecisionBadge behavior={baselineRun.final.behavior} size="sm" />
+              <div className="space-y-4">
+                <BaselineComparison runs={{ ...baselines, trustlayer: run }} />
+                <div className="grid gap-3 sm:grid-cols-2">
+                  {(["direct_llm", "rag_agent"] as SystemVariant[]).map((system) => {
+                    const baselineRun = baselines[system];
+                    if (!baselineRun) return null;
+                    return (
+                      <div key={system} className="border border-line bg-white p-3">
+                        <div className="flex items-center justify-between gap-2">
+                          <span className="text-[13px] font-medium text-ink">
+                            {SYSTEM_SHORT_LABELS[system]}
+                          </span>
+                          <DecisionBadge behavior={baselineRun.final.behavior} size="sm" />
+                        </div>
+                        <p className="mt-1 text-[11.5px] text-muted">
+                          {SYSTEM_DESCRIPTIONS[system]}
+                        </p>
+                        <p className="mt-2 whitespace-pre-line text-[12.5px] leading-relaxed text-ink-soft">
+                          {baselineRun.final.body}
+                        </p>
                       </div>
-                      <p className="mt-1 text-[11.5px] text-muted">{SYSTEM_DESCRIPTIONS[system]}</p>
-                      <p className="mt-2 whitespace-pre-line text-[12.5px] leading-relaxed text-ink-soft">
-                        {baselineRun.final.body}
-                      </p>
-                    </div>
-                  );
-                })}
+                    );
+                  })}
+                </div>
+                <p className="text-[11.5px] leading-relaxed text-muted">
+                  One request, three designs, same fixtures. A behavioral comparison on a single
+                  scenario — the benchmark page runs the whole labelled set.
+                </p>
               </div>
             )}
           </Panel>

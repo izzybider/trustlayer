@@ -18,12 +18,14 @@ export function TradeoffChart({ metrics }: { metrics: SystemMetrics[] }) {
   const ticks = [0, 0.25, 0.5, 0.75, 1];
 
   return (
-    <figure className="panel p-4">
+    <figure className="panel min-w-0 p-4">
       <figcaption className="mb-3">
         <div className="eyebrow">Primary tradeoff</div>
         <h3 className="mt-0.5 text-[14px]">Autonomy against unsupported behavior</h3>
         <p className="mt-1 text-[12px] text-muted">
-          Right and down is better: more finished work, less of it unsupportable.
+          {metrics.length === 0
+            ? "Run benchmark to position the three systems."
+            : "Right and down is better: more finished work, less of it unsupportable."}
         </p>
       </figcaption>
 
